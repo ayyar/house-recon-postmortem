@@ -107,6 +107,8 @@ blockquote { margin: 1.2rem 0; padding-left: 1rem; border-left: 3px solid var(--
   <div class="tile"><div class="v">8.5°</div><div class="k">floor tilt (drift)</div></div>
 </div>
 
+<p><b>update (jul 2026):</b> there is now an <a href="viewer.html">interactive 3D viewer</a> of the plan-first rebuild — the floor plan extruded into clean walls, floors and paint colored from the registered scan, the scan's raw points kept as furniture, the full lot with the ADU, and a flythrough that replays the actual camera trajectory from the video. it is item #8 from the to-do list at the bottom of this post, done. (~6 MB self-contained page, everything inline.)</p>
+
 <h2>the pipeline, in one paragraph</h2>
 <p>the model eats frames at 518×294 and emits per-frame depth, a confidence map, and camera pose (intrinsics + world-to-camera extrinsics), keeping itself consistent over time via cross-attention into a sliding window of cached keys/values — 128 frames in the final config, which beat the default 64. i then fuse all 468 depth maps into a TSDF voxel grid (2.5 mm voxels in normalized units): every frame votes on where surfaces are, agreement accumulates, lone-frame noise cancels. this is the classical "temporal fusion" complement to the model's learned temporal attention, and it did more for visual quality than any other knob. an earlier post-hoc filter pass (confidence ≥ 9, depth ≤ 1.0 units) feeds the fusion only pixels the model itself believed.</p>
 
